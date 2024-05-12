@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Yield Prediction</title>
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}"> -->
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+    /* background-color: #4158D0; */
+    /* background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%); */
+    background-image: url("https://th.bing.com/th/id/OIP.iqfz_gO2VPJwTuqzucaaogHaE8?w=231&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7"); /* Change "1.jpg" to the path of your image file */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    /* overflow: hidden; */
+    /* background-size: 400% 400%;
+    animation: gradient 1s ease infinite; */
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    font-size: large;
+}
+
+
+        .wrapper {
+            /* display: flex; */
+            /* justify-content: center; */
+            /* align-items: center; */
+            min-height: 110vh;
+            background: rgba(39, 39, 39, 0.4);
+        }
+
+        .navbar {
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            font-weight: bolder;
+            font-size: larger;
+        }
+
+        .navbar h1 {
+            color: white;
+            margin: 2px;
+            padding: 10px;
+            float: left;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        form {
+
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+
+            padding-top: 60px;
+            padding-bottom: 20px;
+            padding-left: 50px;
+            padding-right: 50px;
+            border-radius: 20px;
+            display: inline-block;
+            text-align: left;
+            width: 80%;
+            max-width: 450px;
+            margin: 10px auto;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            border-radius: 4px;
+        }
+
+
+
+        #prediction-label {
+            display: none;
+            /* Initially hidden */
+        }
+
+        #prediction {
+            display: none;
+            /* Initially hidden */
+        }
+
+        .elts {
+            margin: 10px;
+        }
+
+        .poppins-regular {
+            font-family: "Poppins", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .poppins-semibold {
+            font-family: "Poppins", sans-serif;
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .poppins-bold {
+            font-family: "Poppins", sans-serif;
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        .button-64 {
+            align-items: center;
+            background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
+            border: 0;
+            border-radius: 8px;
+            box-shadow: rgba(194, 194, 194, 0.2) 0 15px 30px -5px;
+            box-sizing: border-box;
+            color: #FFFFFF;
+            display: flex;
+            font-family: Phantomsans, sans-serif;
+            font-size: 20px;
+            justify-content: center;
+            line-height: 1em;
+            max-width: 100%;
+            min-width: 140px;
+            padding: 3px;
+            text-decoration: none;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .button-64:active,
+        .button-64:hover {
+            outline: 0;
+        }
+
+        .button-64 span {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 16px 24px;
+            border-radius: 6px;
+            width: 100%;
+            height: 100%;
+            transition: 300ms;
+        }
+
+        .button-64:hover span {
+            background: none;
+        }
+
+        @media (min-width: 768px) {
+            .button-64 {
+                font-size: 24px;
+                min-width: 196px;
+            }
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            margin-top: 20px;
+            margin-bottom: 0px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="poppins-semibold">
+    <div class="wrapper">
+        <div class="navbar poppins-bold">
+            <h1>Crop Yield Prediction</h1>
+        </div>
+
+        <div class="container">
+            <form method="post" id="prediction-form">
+                <label for="state">State:</label>
+                <select id="state" name="state" required>
+                    <option value="" disabled selected>Select State</option>
+                    <option value="state1">Andaman and Nicobar Islands</option>
+                    <option value="state2">Andhra Pradesh</option>
+                    <option value="state3">Arunachal Pradesh</option>
+                    <option value="state4">Assam</option>
+                    <option value="state5">Bihar</option>
+                    <option value="state6">Chandigarh</option>
+                    <option value="state7">Chhattisgarh</option>
+                    <option value="state8">Dadra and Nagar Haveli</option>
+                    <option value="state9">Daman and Diu</option>
+                    <option value="state10">Delhi</option>
+                    <option value="state11">Goa</option>
+                    <option value="state12">Gujarat</option>
+                    <option value="state13">Haryana</option>
+                    <option value="state14">Himachal Pradesh</option>
+                    <option value="state15">Jammu and Kashmir</option>
+                    <option value="state16">Jharkhand</option>
+                    <option value="state17">Karnataka</option>
+                    <option value="state18">Kerala</option>
+                    <option value="state19">Madhya Pradeshh</option>
+                    <option value="state20">Maharashtra</option>
+                    <option value="state21">Manipur</option>
+                    <option value="state22">Meghalaya</option>
+                    <option value="state23">Mizoram</option>
+                    <option value="state24">Nagaland</option>
+                    <option value="state25">Odisha</option>
+                    <option value="state26">Puducherry</option>
+                    <option value="state27">Punjab</option>
+                    <option value="state28">Rajasthan</option>
+                    <option value="state29">Sikkim</option>
+                    <option value="state30">Tamil Nadu</option>
+                    <option value="state31">Telangana</option>
+                    <option value="state32">THE DADRA AND NAGAR HAVELI AND DAMAN AND DIU</option>
+                    <option value="state33">Tripura</option>
+                    <option value="state34">Uttar Pradesh</option>
+                    <option value="state35">Uttarakhand</option>
+
+
+                    <!-- -->
+                </select><br><br>
+
+                <label for="district">District:</label>
+                <select id="district" name="district" required>
+                    <option value="" disabled selected>Select District</option>
+                </select><br><br>
+
+                <label for="year">Year:</label>
+                <input type="number" id="year" name="year" step="1" required><br><br>
+
+                <!-- <label for="year">Year:</label>
+            <input type="number" id="year" name="year" min="2000" max="2024" step="1" required><br><br>         -->
+
+                <label for="season">Season:</label>
+                <select id="season" name="season" required>
+                    <option value="" disabled selected>Select Season</option>
+                    <option value="season1">Kharif</option>
+                    <option value="season2">Autumn</option>
+                    <option value="season3">Rabi</option>
+                    <option value="season4">Total</option>
+                    <option value="season5">Summer</option>
+                    <option value="season6">Winter</option>
+                    <option value="season7">Whole Year</option>
+
+                </select><br><br>
+
+                <label for="area">Area (Hectare):</label>
+                <input type="number" id="area" name="area" step="0.01" required><br><br>
+
+                <button type="submit" class="button-64"><span class="text">Predict</span></button>
+
+
+                <label id="prediction-label" for="prediction">Prediction:</label>
+                <input type="text" id="prediction" name="prediction" readonly><br><br>
+            </form>
+            <!-- <div id="prediction-result" style="display: none;">
+            <h2>Prediction: <span id="predicted-value"></span></h2>
+        </div> -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var stateDropdown = document.getElementById('state');
+            var districtDropdown = document.getElementById('district');
+
+            // Define districts for each state
+            var districtOptions = {
+                'state1': ['2.NICOBARS', '3.NORTH AND MIDDLE ANDAMAN', '4.SOUTH ANDAMANS'],
+                'state2': ['1.ADILABAD', '2.ANANTAPUR', '3.CHITTOOR', '5.GUNTUR', '6.HYDERABAD', '7.KADAPA', '8.KARIMNAGAR', '9.KHAMMAM', '10.KRISHNA', '11.KURNOOL', '12.MAHBUBNAGAR', '13.MEDAK', '14.NALGONDA', '15.NIZAMABAD', '16.PRAKASAM', '17.RANGAREDDI', '18.SPSR NELLORE', '19.SRIKAKULAM', '20.VISAKHAPATANAM', '21.VIZIANAGARAM', '22.WARANGAL'],
+                'state3': ['1.ANJAW', '2.CHANGLANG', '3.DIBANG VALLEY', '4.EAST KAMENG', '5.EAST SIANG', '6.KAMLE', '7.KRA DAADI', '8.KURUNG KUMEY', '9.LEPARADA', '10.LOHIT', '11.LONGDING', '12.LOWER DIBANG VALLEY', '13.LOWER SIANG', '14.LOWER SUBANSIRI', '15.NAMSAI', '16.PAKKE KESSANG', '17.PAPUM PARE', '18.SHI YOMI', '19.SIANG', '20.TAWANG', '21.TIRAP', '22.UPPER SIANG', '23.UPPER SUBANSIRI', '24.WEST KAMENG', '25.WEST SIANG'],
+                'state4': ['1.BAKSA', '2.BARPETA', '3.BONGAIGAON', '4.CACHAR', '5.CHIRANG', '6.DARRANG', '7.DHEMAJI', '8.DHUBRI', '9.DIBRUGARH', '10.DIMA HASAO', '11.GOALPARA', '12.GOLAGHAT', '13.HAILAKANDI', '14.JORHAT', '15.KAMRUP', '16.KAMRUP METRO', '17.KARBI ANGLONG', '18.KARIMGANJ', '19.KOKRAJHAR', '20.LAKHIMPUR', '21.MARIGAON', '22.NAGAON', '23.NALBARI', '24.SIVASAGAR', '25.SONITPUR', '26.TINSUKIA', '27.UDALGURI'],
+                'state5': ['1.ARARIA', '2.ARWAL', '3.AURANGABAD', '4.BANKA', '5.BEGUSARAI', '6.BHAGALPUR', '7.BHOJPUR', '8.BOKARO', '9.BUXAR', '10.CHATRA', '11.DARBHANGA', '12.DEOGHAR', '13.DHANBAD', '14.DUMKA', '15.EAST SINGHBUM', '16.GARHWA', '17.GAYA', '18.GIRIDIH', '19.GODDA', '20.GOPALGANJ', '21.GUMLA', '22.HAZARIBAGH', '23.JAMUI', '24.JEHANABAD', '25.KAIMUR (BHABUA)', '26.KATIHAR', '27.KHAGARIA', '28.KISHANGANJ', '29.KODERMA', '30.LAKHISARAI', '31.LOHARDAGA', '32.MADHEPURA', '33.MADHUBANI', '34.MUNGER', '35.MUZAFFARPUR', '36.NALANDA', '37.NAWADA', '38.PAKUR', '39.PALAMU', '40.PASHCHIM CHAMPARAN', '41.PATNA', '42.PURBI CHAMPARAN', '43.PURNIA', '44.RANCHI', '45.ROHTAS', '46.SAHARSA', '47.SAHEBGANJ', '48.SAMASTIPUR', '49.SARAN', '50.SHEIKHPURA', '51.SHEOHAR', '52.SITAMARHI', '53.SIWAN', '54.SUPAUL', '55.VAISHALI', '56.WEST SINGHBHUM'],
+                'state6': ['1.CHANDIGARH'],
+                'state7': ['District A', 'District B', 'District C'],
+                'state8': ['District 1', 'District 2', 'District 3'],
+                'state9': ['District 1', 'District 2', 'District 3'],
+                'state10': ['District 1', 'District 2', 'District 3'],
+                'state11': ['District 1', 'District 2', 'District 3'],
+                'state12': ['District A', 'District B', 'District C'],
+                'state13': ['District 1', 'District 2', 'District 3'],
+                'state14': ['District 1', 'District 2', 'District 3'],
+                'state15': ['District 1', 'District 2', 'District 3'],
+                'state16': ['District 1', 'District 2', 'District 3'],
+                'state17': ['District A', 'District B', 'District C'],
+                'state18': ['District 1', 'District 2', 'District 3'],
+                'state19': ['District 1', 'District 2', 'District 3'],
+                'state20': ['District 1', 'District 2', 'District 3'],
+                'state21': ['District 1', 'District 2', 'District 3'],
+                'state22': ['District A', 'District B', 'District C'],
+                'state23': ['District 1', 'District 2', 'District 3'],
+                'state24': ['District 1', 'District 2', 'District 3'],
+                'state25': ['District 1', 'District 2', 'District 3'],
+                'state26': ['District 1', 'District 2', 'District 3'],
+                'state27': ['District A', 'District B', 'District C'],
+                'state28': ['District 1', 'District 2', 'District 3'],
+                'state29': ['District 1', 'District 2', 'District 3'],
+                'state30': ['District 1', 'District 2', 'District 3'],
+                'state31': ['District 1', 'District 2', 'District 3'],
+                'state32': ['District A', 'District B', 'District C'],
+                'state33': ['District 1', 'District 2', 'District 3'],
+                'state34': ['District 1', 'District 2', 'District 3']
+            };
+
+            // Update district dropdown when state selection changes
+            stateDropdown.addEventListener('change', function () {
+                var selectedState = stateDropdown.value;
+                var districts = districtOptions[selectedState] || [];
+
+                // Clear previous options
+                districtDropdown.innerHTML = '<option value="" disabled selected>Select District</option>';
+
+                // Add new options
+                districts.forEach(function (district) {
+                    var option = document.createElement('option');
+                    option.value = district;
+                    option.textContent = district;
+                    districtDropdown.appendChild(option);
+                });
+            });
+
+
+            var form = document.getElementById('prediction-form');
+            var predictionField = document.getElementById('prediction');
+            var predictionLabel = document.getElementById('prediction-label');
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent default form submission
+                var formData = new FormData(form); // Get form data
+                fetch('/', { // Send form data to the server
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.text()) // Parse response as text
+                    .then(prediction => { // Display prediction result
+                        predictionLabel.style.display = 'block'; // Show the prediction label
+                        predictionField.style.display = 'block'; // Show the prediction field
+                        predictionField.value = prediction; // Set the predicted value in the input field
+                    })
+                    .catch(error => console.error('Error:', error)); // Log any errors
+            });
+        });
+
+
+    </script>
+
+    {% if prediction %}
+    <h2>Prediction: {{ prediction[0] }}</h2>
+    {% endif %}
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script> -->
+</body>
+
+</html>
